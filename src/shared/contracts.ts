@@ -1,5 +1,12 @@
 export type Corner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
+export interface WindowBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export interface Location {
   id: number;
   name: string;
@@ -64,6 +71,7 @@ export interface AppSettings {
   alwaysOnTop: boolean;
   launchAtLogin: boolean;
   location: Location | null;
+  windowBounds?: WindowBounds | null;
 }
 
 export interface AppData {
@@ -127,6 +135,7 @@ export interface UpdateSettingsInput {
   alwaysOnTop?: boolean;
   launchAtLogin?: boolean;
   location?: Location | null;
+  windowBounds?: WindowBounds | null;
 }
 
 export interface DashboardAPI {

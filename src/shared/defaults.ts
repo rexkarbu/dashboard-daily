@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   alwaysOnTop: true,
   launchAtLogin: true,
   location: null,
+  windowBounds: null,
 };
 
 export const DEFAULT_APP_DATA: AppData = {
@@ -26,6 +27,8 @@ export const DEFAULT_APP_DATA: AppData = {
 export const WINDOW_CONFIG = {
   width: 390,
   height: 640,
+  minWidth: 360,
+  minHeight: 480,
   defaultMargin: 16,
   minMargin: 0,
   maxMargin: 64,

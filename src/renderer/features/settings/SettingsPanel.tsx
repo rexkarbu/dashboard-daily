@@ -35,6 +35,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     onUpdateSettings({ launchAtLogin: e.target.checked });
   };
 
+  const handleResetBounds = () => {
+    onUpdateSettings({ windowBounds: null });
+  };
+
   const handleSelectLocation = async (loc: Location) => {
     await onUpdateSettings({ location: loc });
     setIsChangingLocation(false);
@@ -98,6 +102,18 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           <option value="bottom-right">Kanan Bawah</option>
           <option value="bottom-left">Kiri Bawah</option>
         </select>
+      </div>
+
+      {/* Reset Bounds */}
+      <div className="form-group" style={{ marginTop: '4px' }}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={handleResetBounds}
+          style={{ alignSelf: 'flex-start', fontSize: '12px' }}
+        >
+          Reset posisi & ukuran jendela
+        </button>
       </div>
 
       {/* Always On Top Toggle */}

@@ -7,8 +7,8 @@ import { DailyRolloverService } from './services/daily-rollover-service';
 import { createDashboardWindow } from './window/create-dashboard-window';
 import { createTray, updateTrayMenu, TrayCallbacks } from './tray/create-tray';
 import { registerIpcHandlers, broadcastStateChange, buildSnapshot } from './ipc/register-ipc-handlers';
-import { repositionDashboardWindow } from './window/window-position';
-import { AppSettings } from '../shared/contracts';
+import { applyWindowBounds } from './window/window-position';
+import { AppSettings, WindowBounds } from '../shared/contracts';
 
 export class AppLifecycle {
   private mainWindow: BrowserWindow | null = null;
@@ -55,7 +55,15 @@ export class AppLifecycle {
     await this.rolloverService.performRolloverIfNeeded();
 
     // 3. Create dashboard window
-    this.mainWindow = createDashboardWindow(appData.settings);
+    this.mainWindow = createDashboardWindow(appData.settings, async (bounds) => {
+      await this.jsonStore.update((curr) => ({
+        ...curr,
+        settings: {
+          ...curr.settings,
+          windowBounds: bounds,
+        },
+      }));
+    });
 
     // Prevent closing window from destroying app, hide to tray instead
     this.mainWindow.on('close', (event) => {
@@ -72,11 +80,7 @@ export class AppLifecycle {
         if (this.mainWindow.isVisible()) {
           this.mainWindow.hide();
         } else {
-          repositionDashboardWindow(
-            this.mainWindow,
-            appData.settings.corner,
-            appData.settings.margin
-          );
+          // Do not reposition automatically on show
           this.mainWindow.show();
           this.mainWindow.focus();
         }
@@ -88,11 +92,18 @@ export class AppLifecycle {
         broadcastStateChange(this.mainWindow, snap);
       },
       onUpdateSettings: async (newSettings: Partial<AppSettings>) => {
-        await this.jsonStore.update((curr) => ({
+        let clearedBounds: WindowBounds | null | undefined = undefined;
+        // If user actively changes corner/margin, clear saved bounds so it snaps to the new corner
+        if (newSettings.corner !== undefined || newSettings.margin !== undefined) {
+          clearedBounds = null;
+        }
+
+        const updated = await this.jsonStore.update((curr) => ({
           ...curr,
           settings: {
             ...curr.settings,
             ...newSettings,
+            ...(clearedBounds !== undefined ? { windowBounds: clearedBounds } : {}),
           },
         }));
 
@@ -100,9 +111,13 @@ export class AppLifecycle {
           if (newSettings.alwaysOnTop !== undefined) {
             this.mainWindow.setAlwaysOnTop(newSettings.alwaysOnTop);
           }
-          if (newSettings.corner !== undefined || newSettings.margin !== undefined) {
-            const data = await this.jsonStore.getData();
-            repositionDashboardWindow(this.mainWindow, data.settings.corner, data.settings.margin);
+          if (newSettings.corner !== undefined || newSettings.margin !== undefined || newSettings.windowBounds === null) {
+            applyWindowBounds(
+              this.mainWindow,
+              updated.settings.windowBounds,
+              updated.settings.corner,
+              updated.settings.margin
+            );
           }
           if (newSettings.launchAtLogin !== undefined) {
             this.autoStartService.applyAutoStart(newSettings.launchAtLogin);

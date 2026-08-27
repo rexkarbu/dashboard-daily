@@ -3,7 +3,7 @@ import { JsonStore } from '../services/json-store';
 import { AutoStartService } from '../services/auto-start-service';
 import { updateSettingsInputSchema } from '../../shared/schemas';
 import { AppError } from '../utils/app-error';
-import { repositionDashboardWindow } from '../window/window-position';
+import { applyWindowBounds } from '../window/window-position';
 import { updateTrayMenu, TrayCallbacks } from '../tray/create-tray';
 
 export async function handleSettingsUpdate(
@@ -30,6 +30,10 @@ export async function handleSettingsUpdate(
       location: newLocation,
     };
 
+    if (parsed.data.corner !== undefined || parsed.data.margin !== undefined) {
+      finalSettings.windowBounds = null;
+    }
+
     return {
       ...current,
       settings: finalSettings,
@@ -44,11 +48,12 @@ export async function handleSettingsUpdate(
   }
 
   if (
-    (parsed.data.corner !== undefined || parsed.data.margin !== undefined) &&
+    (parsed.data.corner !== undefined || parsed.data.margin !== undefined || parsed.data.windowBounds === null) &&
     !window.isDestroyed()
   ) {
-    repositionDashboardWindow(
+    applyWindowBounds(
       window,
+      updatedData.settings.windowBounds,
       updatedData.settings.corner,
       updatedData.settings.margin
     );

@@ -134,12 +134,20 @@ export const weatherCacheSchema = z.object({
   data: weatherDataSchema,
 });
 
+export const windowBoundsSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  width: z.number(),
+  height: z.number(),
+});
+
 export const appSettingsSchema = z.object({
   corner: cornerSchema,
   margin: z.number().min(0).max(128),
   alwaysOnTop: z.boolean(),
   launchAtLogin: z.boolean(),
   location: locationSchema.nullable(),
+  windowBounds: windowBoundsSchema.nullable().optional(),
 });
 
 export const updateSettingsInputSchema = z.object({
@@ -148,6 +156,7 @@ export const updateSettingsInputSchema = z.object({
   alwaysOnTop: z.boolean().optional(),
   launchAtLogin: z.boolean().optional(),
   location: locationSchema.nullable().optional(),
+  windowBounds: windowBoundsSchema.nullable().optional(),
 });
 
 export const appDataSchema = z.object({
