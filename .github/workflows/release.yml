@@ -1,0 +1,116 @@
+name: Release Windows
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    name: Build and Release (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate tag matches package.json version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $pkgVersion = (Get-Content package.json | ConvertFrom-Json).version
+          $expectedTag = "v$pkgVersion"
+          Write-Host "Git tag     : $tag"
+          Write-Host "package.json: $pkgVersion"
+          Write-Host "Expected tag: $expectedTag"
+          if ($tag -ne $expectedTag) {
+            Write-Error "Tag '$tag' does not match package.json version 'v$pkgVersion'. Aborting."
+            exit 1
+          }
+          Write-Host "Version validation passed."
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run typecheck
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build installer (make)
+        run: npm run make
+
+      - name: Locate and stage artifacts
+        id: stage
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          Write-Host "Version: $version"
+
+          # Find Setup.exe (Squirrel)
+          $setupExe = Get-ChildItem -Path "out/make" -Recurse -Filter "*Setup.exe" | Select-Object -First 1
+          if (-not $setupExe) {
+            Write-Error "ERROR: No Squirrel Setup.exe found under out/make/"
+            exit 1
+          }
+          Write-Host "Found Setup.exe: $($setupExe.FullName)"
+
+          # Find ZIP (win32-x64)
+          $zipFile = Get-ChildItem -Path "out/make" -Recurse -Filter "*.zip" | Where-Object { $_.Name -match "win32-x64" } | Select-Object -First 1
+          if (-not $zipFile) {
+            Write-Error "ERROR: No win32-x64 ZIP found under out/make/"
+            exit 1
+          }
+          Write-Host "Found ZIP: $($zipFile.FullName)"
+
+          # Create staging directory
+          $staging = "out/release-staging"
+          New-Item -ItemType Directory -Force -Path $staging | Out-Null
+
+          # Copy with consistent names
+          $setupDest = "$staging/Dashboard-Daily-$version-Setup.exe"
+          $zipDest   = "$staging/Dashboard-Daily-win32-x64-$version.zip"
+          Copy-Item -Path $setupExe.FullName -Destination $setupDest
+          Copy-Item -Path $zipFile.FullName  -Destination $zipDest
+          Write-Host "Staged: $setupDest"
+          Write-Host "Staged: $zipDest"
+
+          # Generate SHA256SUMS.txt
+          $sha256sumPath = "$staging/SHA256SUMS.txt"
+          $setupHash = (Get-FileHash -Path $setupDest -Algorithm SHA256).Hash.ToLower()
+          $zipHash   = (Get-FileHash -Path $zipDest   -Algorithm SHA256).Hash.ToLower()
+          "$setupHash  Dashboard-Daily-$version-Setup.exe" | Out-File -FilePath $sha256sumPath -Encoding utf8
+          "$zipHash  Dashboard-Daily-win32-x64-$version.zip" | Out-File -FilePath $sha256sumPath -Encoding utf8 -Append
+          Write-Host "SHA256SUMS.txt:"
+          Get-Content $sha256sumPath
+
+          # Export paths for next steps
+          echo "VERSION=$version"                    >> $env:GITHUB_OUTPUT
+          echo "SETUP_PATH=$setupDest"               >> $env:GITHUB_OUTPUT
+          echo "ZIP_PATH=$zipDest"                   >> $env:GITHUB_OUTPUT
+          echo "SHA256SUMS_PATH=$sha256sumPath"      >> $env:GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Dashboard Daily v${{ steps.stage.outputs.VERSION }}"
+          generate_release_notes: true
+          files: |
+            ${{ steps.stage.outputs.SETUP_PATH }}
+            ${{ steps.stage.outputs.ZIP_PATH }}
+            ${{ steps.stage.outputs.SHA256SUMS_PATH }}

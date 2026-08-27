@@ -1,5 +1,8 @@
 # Dashboard Daily 🌤️📅
 
+[![CI](https://github.com/rexkarbu/dashboard-daily/actions/workflows/ci.yml/badge.svg)](https://github.com/rexkarbu/dashboard-daily/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 **Dashboard Daily** adalah desktop widget harian berukuran kompak (frameless, semi-transparan, dark-themed) yang selalu terlihat di pojok layar monitor Anda untuk memberikan informasi esensial dalam satu pandangan cepat (*glanceable*):
 - 🌤️ **Cuaca Hari Ini**: Integrasi Open-Meteo API tanpa API key dengan cache offline dan geocoding pencarian lokasi langsung.
 - 📅 **Agenda Hari Ini**: Jadwal manual harian dengan jam mulai, jam selesai opsional, dan catatan.
@@ -8,6 +11,8 @@
 - ⚙️ **Widget Controller**: Pengaturan 4 pojok layar (*corner positioning*), Always-On-Top toggle, System Tray, dan Auto-Start saat startup OS.
 
 > **Privasi 100% Lokal**: Tidak ada akun, backend, database server, cloud sync, analytics, atau telemetry. Seluruh data pribadi Anda tersimpan secara lokal dan aman di perangkat pengguna.
+
+> **Catatan Rilis**: Installer publik belum diterbitkan. Release resmi akan tersedia melalui halaman [GitHub Releases](https://github.com/rexkarbu/dashboard-daily/releases) setelah proses pengujian dan penandatanganan selesai.
 
 ---
 
@@ -59,7 +64,7 @@ npm test
 # Package folder executables (out/Dashboard Daily-win32-x64)
 npm run package
 
-# Build installer installer resmi (Setup.exe & ZIP untuk Windows)
+# Build installer resmi (Setup.exe & ZIP untuk Windows)
 npm run make
 ```
 
