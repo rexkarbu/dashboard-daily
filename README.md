@@ -12,7 +12,7 @@
 
 > **Privasi 100% Lokal**: Tidak ada akun, backend, database server, cloud sync, analytics, atau telemetry. Seluruh data pribadi Anda tersimpan secara lokal dan aman di perangkat pengguna.
 
-> **Catatan Rilis**: Installer publik belum diterbitkan. Release resmi akan tersedia melalui halaman [GitHub Releases](https://github.com/rexkarbu/dashboard-daily/releases) setelah proses pengujian dan penandatanganan selesai.
+> **Rilis Windows:** Unduh versi terbaru melalui [GitHub Releases](https://github.com/rexkarbu/dashboard-daily/releases/latest). Installer saat ini belum ditandatangani secara digital, sehingga Windows SmartScreen mungkin menampilkan peringatan. Verifikasi file menggunakan `SHA256SUMS.txt` yang disertakan pada setiap release.
 
 ---
 
@@ -30,7 +30,19 @@
 
 ## 🚀 Prasyarat & Instalasi
 
-### Prasyarat
+### Instalasi Windows (Rilis)
+1. Buka halaman [GitHub Releases](https://github.com/rexkarbu/dashboard-daily/releases/latest).
+2. Unduh:
+   - `Dashboard-Daily-0.1.0-Setup.exe` (Sesuaikan dengan versi terbaru)
+   - `SHA256SUMS.txt`
+3. Verifikasi checksum SHA-256 menggunakan PowerShell:
+   ```powershell
+   Get-FileHash ".\Dashboard-Daily-0.1.0-Setup.exe" -Algorithm SHA256
+   ```
+4. Cocokkan hasilnya dengan `SHA256SUMS.txt`.
+5. Jalankan installer. *Catatan: Installer belum memiliki digital code signing, Windows SmartScreen mungkin memberi peringatan dan Anda harus memilih "Run anyway" ("Tetap jalankan").*
+
+### Prasyarat (Development)
 - Node.js 22 LTS
 - npm 10.9.8 (dipin via `packageManager` di `package.json`)
 
