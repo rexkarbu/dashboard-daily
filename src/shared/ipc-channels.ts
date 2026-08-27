@@ -1,0 +1,16 @@
+export const IPC_CHANNELS = {
+  GET_BOOTSTRAP: 'dashboard:get-bootstrap',
+  AGENDA_CREATE: 'dashboard:agenda:create',
+  AGENDA_UPDATE: 'dashboard:agenda:update',
+  AGENDA_REMOVE: 'dashboard:agenda:remove',
+  TODO_CREATE: 'dashboard:todo:create',
+  TODO_UPDATE: 'dashboard:todo:update',
+  TODO_TOGGLE: 'dashboard:todo:toggle',
+  TODO_REMOVE: 'dashboard:todo:remove',
+  NOTE_SAVE: 'dashboard:note:save',
+  WEATHER_SEARCH: 'dashboard:weather:search',
+  WEATHER_REFRESH: 'dashboard:weather:refresh',
+  SETTINGS_UPDATE: 'dashboard:settings:update',
+  WINDOW_HIDE: 'dashboard:window:hide',
+  STATE_CHANGED: 'dashboard:state-changed',
+} as const;
