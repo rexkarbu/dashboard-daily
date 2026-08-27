@@ -106,7 +106,7 @@ jobs:
           echo "SHA256SUMS_PATH=$sha256sumPath"      >> $env:GITHUB_OUTPUT
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: "Dashboard Daily v${{ steps.stage.outputs.VERSION }}"
           generate_release_notes: true
