@@ -21,10 +21,14 @@ export function createTray(
   }
 
   // Load tray icon
-  const iconPath = path.join(app.getAppPath(), 'assets', 'icons', 'tray-icon.png');
+  const iconPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets', 'icons', 'tray-icon.png')
+    : path.join(app.getAppPath(), 'assets', 'icons', 'tray-icon.png');
+
   let icon = nativeImage.createFromPath(iconPath);
   if (icon.isEmpty()) {
     // Fallback if file not found at relative path
+    console.error(`[Tray] Failed to load tray icon at ${iconPath}`);
     icon = nativeImage.createEmpty();
   }
 

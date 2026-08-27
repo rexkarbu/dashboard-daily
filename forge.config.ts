@@ -18,6 +18,7 @@ const config: ForgeConfig = {
     appBundleId: 'com.dashboarddaily.desktop',
     asar: true,
     icon: './assets/icons/app-icon',
+    extraResource: ['./assets'],
   },
   rebuildConfig: {},
   makers: [

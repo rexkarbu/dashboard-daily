@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Base rounded square -->
+  <rect x="24" y="24" width="208" height="208" rx="52" fill="#141916" />
+  
+  <!-- Calendar top bar -->
+  <path d="M 64 84 C 64 72.95 72.95 64 84 64 L 172 64 C 183.05 64 192 72.95 192 84 L 192 96 L 64 96 Z" fill="#2A322C" />
+  
+  <!-- Calendar body -->
+  <path d="M 64 96 L 192 96 L 192 172 C 192 183.05 183.05 192 172 192 L 84 192 C 72.95 192 64 183.05 64 172 Z" fill="#A5BCA6" />
+  
+  <!-- Checkmark -->
+  <path d="M 104 144 L 124 164 L 168 112" fill="none" stroke="#141916" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
