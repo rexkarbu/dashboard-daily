@@ -1,7 +1,7 @@
 {
   "name": "dashboard-daily",
   "productName": "Dashboard Daily",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Desktop widget harian kompak untuk cuaca, agenda, to-do, dan catatan cepat",
   "main": ".webpack/main",
   "private": true,
