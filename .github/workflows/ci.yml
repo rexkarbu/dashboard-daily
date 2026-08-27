@@ -35,8 +35,13 @@ jobs:
           cache: "npm"
           cache-dependency-path: package-lock.json
 
+      - name: Verify toolchain
+        run: |
+          node --version
+          npx --yes npm@10.9.8 --version
+
       - name: Install dependencies
-        run: npm ci
+        run: npx --yes npm@10.9.8 ci
 
       - name: Run lint
         run: npm run lint
@@ -65,8 +70,13 @@ jobs:
           cache: "npm"
           cache-dependency-path: package-lock.json
 
+      - name: Verify toolchain
+        run: |
+          node --version
+          npx --yes npm@10.9.8 --version
+
       - name: Install dependencies
-        run: npm ci
+        run: npx --yes npm@10.9.8 ci
 
       - name: Package application
         run: npm run package

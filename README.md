@@ -31,8 +31,8 @@
 ## 🚀 Prasyarat & Instalasi
 
 ### Prasyarat
-- Node.js versi 18.x atau lebih baru
-- npm versi 9.x atau lebih baru
+- Node.js 22 LTS
+- npm 10.9.8 (dipin via `packageManager` di `package.json`)
 
 ### Instalasi Dependensi
 ```bash
